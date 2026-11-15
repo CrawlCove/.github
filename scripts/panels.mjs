@@ -1,15 +1,16 @@
 // The large story panels, bars, buttons, heading icons and per-repo banners.
-import { C, T, n, svg, measure, wrap, water, stars, waves, bubbles, rays, kelp, seabed, fish, probe, pill, cue, check, cross } from './lib.mjs'
+import { C, T, n, svg, measure, wrap, water, stars, waves, bubbles, rays, kelp, seabed, fish, probe, pill, cue, check, cross, headland, LH_DEFS, LH_CSS, shootingStar, crab } from './lib.mjs'
 import { sceneFor, SCENE_CSS } from './cards.mjs'
 
 const W = 1200
 
 export function hero() {
   const h = 520, wl = 262
-  const body = `${stars(W, wl - 20, 70, 11)}
+  const body = `${stars(W, wl - 20, 70, 11)}${shootingStar(330, 40, 0)}${shootingStar(900, 28, -6, 17)}
 <circle cx="600" cy="120" r="330" fill="url(#glowV)" opacity=".28"/>
+${headland(W, wl, 'right')}${headland(W, wl, 'left')}
 ${T('OPEN-SOURCE SEO TOOLS', { x: 600, y: 74, size: 15, font: 'mono', weight: 600, fill: C.tide, anchor: 'middle', ls: 3 })}
-${T('Crawl Cove', { x: 600, y: 160, size: 92, font: 'display', weight: 700, fill: C.foam, anchor: 'middle', ls: -2.5 })}
+${(() => { const o = { size: 92, font: 'display', weight: 700, ls: -2.5 }; const tw = measure('Crawl Cove', o), a = measure('Crawl ', o) + o.ls; const x0 = 600 - tw / 2; return T('Crawl', { ...o, x: x0, y: 160, fill: C.foam }) + T('Cove', { ...o, x: x0 + a, y: 160, fill: 'url(#tgh)' }) })()}
 ${T('Free tools for technical SEO, and the desktop crawler behind them.', { x: 600, y: 210, size: 23, fill: C.mist, anchor: 'middle' })}
 ${water(wl, W, h - wl, 'hw')}
 ${rays(W, wl, 230, 4)}
@@ -19,10 +20,11 @@ ${fish(-120, 330, { dur: 34, opacity: 0.3 })}${fish(-300, 420, { dur: 46, delay:
 ${seabed(W, h - 44, 60)}
 ${[70, 120, 190, 960, 1040, 1110, 1150].map((x, i) => kelp(x, h - 26, 70 + (i % 3) * 26, i % 2 ? '#123F4D' : '#0E3340', i + 1)).join('')}
 ${bubbles(250, 420, h - 40, 7, { h: 200, seed: 9 })}${bubbles(800, 930, h - 40, 6, { h: 190, seed: 12 })}
-<g style="animation:bob 5s ease-in-out infinite"><g transform="translate(540 352) rotate(16)">${probe({ lampLen: 230 })}</g></g>
+<g style="animation:bob 5s ease-in-out infinite"><g fill="none" stroke="${C.signal}" stroke-width="1.5">${[0, 1.5].map((d) => `<circle class="fb" cx="522" cy="316" r="16" opacity="0" style="animation:pulse 3s ease-out ${-d}s infinite"/>`).join('')}</g><g transform="translate(540 352) rotate(16)">${probe({ lampLen: 230 })}</g></g>
+${crab(760, 488, { dist: 150, dur: 18 })}
 ${bubbles(470, 500, 345, 4, { h: 80, seed: 21 })}
 ${cue('Click to dive in', 600, 446)}`
-  return svg({ w: W, h, label: 'Crawl Cove: free, open-source tools for technical SEO and the desktop crawler behind them. A small dive probe waits just under the surface. Click to dive in.', body })
+  return svg({ w: W, h, label: 'Crawl Cove: free, open-source tools for technical SEO and the desktop crawler behind them. A lighthouse sweeps the cove and a small dive probe waits just under the surface. Click to dive in.', body, defs: LH_DEFS, css: LH_CSS })
 }
 
 // The crawl as a dive. One loop: the probe descends through crawl depths and logs what its lamp finds.
@@ -81,12 +83,12 @@ function bar({ label, icon, title, sub, cueText, seed }) {
   const body = `${water(0, W, h, 'bw', '#081C2A', '#05060A')}
 ${seabed(W, h - 30, 40, '#070B12', seed)}
 ${[30, 1080, 1140].map((x, i) => kelp(x, h - 16, 40 + i * 12, '#0E3340', seed + i)).join('')}
-${bubbles(60, 200, h - 20, 5, { h: 110, seed })}
+${bubbles(60, 200, h - 20, 5, { h: 110, seed })}${crab(640, h - 22, { dist: 120, dur: 14, scale: 0.8, delay: -seed })}
 <g transform="translate(118 78)">${icon}</g>
 ${T(title, { x: 214, y: 66, size: 32, font: 'display', weight: 700, fill: C.foam, ls: -0.6 })}
 ${T(sub, { x: 214, y: 97, size: 16, font: 'mono', fill: C.fog })}
 ${cue(cueText, 1030, 49)}`
-  return svg({ w: W, h, label, body, defs: BEAM })
+  return svg({ w: W, h, label, body, defs: BEAM, css: LH_CSS })
 }
 
 export const chestBar = () => bar({ label: 'Something is glowing on the seabed: the Crawl Cove desktop app, with a free plan. Click to open the chest.', icon: `<g transform="scale(.85)">${chest(false)}</g>`, title: 'Something is glowing on the seabed', sub: 'the desktop app, free plan included', cueText: 'Click to open', seed: 14 })
@@ -109,8 +111,8 @@ ${T('IN THE CHEST', { x: 560, y: 78, size: 14, font: 'mono', weight: 600, fill: 
 ${T('The desktop app.', { x: 560, y: 134, size: 50, font: 'display', weight: 700, fill: C.foam, ls: -1.2 })}
 ${T('Free plan included.', { x: 560, y: 188, size: 50, font: 'display', weight: 700, fill: 'url(#tgh)', ls: -1.2 })}
 ${rows.map((r, i) => `<g style="animation:s${i + 1} 10s linear infinite"><circle cx="572" cy="${232 + i * 36}" r="11" fill="${C.surface2}" stroke="${C.signal}" stroke-width="1.6"/>${check(572, 232 + i * 36, 0.9)}${T(r, { x: 596, y: 239 + i * 36, size: 21, fill: C.foam, weight: 500 })}</g>`).join('')}
-${bubbles(520, 1150, h - 50, 9, { h: 260, seed: 41 })}`
-  return svg({ w: W, h, label: 'In the chest: the Crawl Cove desktop app, free plan included. 1 project, 1,000 URLs a crawl, Search Console connection, no account, no card and no expiry.', body, defs: BEAM, css: SCENE_CSS })
+${bubbles(520, 1150, h - 50, 9, { h: 260, seed: 41 })}${crab(420, h - 34, { dist: 90, dur: 12, scale: 1.2 })}`
+  return svg({ w: W, h, label: 'In the chest: the Crawl Cove desktop app, free plan included. 1 project, 1,000 URLs a crawl, Search Console connection, no account, no card and no expiry.', body, defs: BEAM, css: SCENE_CSS + LH_CSS })
 }
 
 export function stack() {
@@ -132,7 +134,8 @@ export function stack() {
 
 export function surface() {
   const h = 400, wl = 270
-  const body = `${stars(W, wl - 10, 80, 61)}<circle cx="600" cy="250" r="360" fill="url(#glowT)" opacity=".2"/>
+  const body = `${stars(W, wl - 10, 80, 61)}${shootingStar(420, 36, -3)}<circle cx="600" cy="250" r="360" fill="url(#glowT)" opacity=".2"/>
+${headland(W, wl, 'right')}${headland(W, wl, 'left')}
 ${T('Back at the surface.', { x: 600, y: 112, size: 64, font: 'display', weight: 700, fill: C.foam, anchor: 'middle', ls: -1.6 })}
 ${T('Star a tool you use. Then crawl your own site, free.', { x: 600, y: 160, size: 23, fill: C.mist, anchor: 'middle' })}
 ${water(wl, W, h - wl, 'fw')}
@@ -142,7 +145,7 @@ ${waves(wl + 4, W, { amp: 7, period: 240, dur: 9, fill: C.shallow, depth: 14 })}
 <g fill="none" stroke="${C.tide}" stroke-width="1.5">${[0, 1.2, 2.4].map((d) => `<ellipse class="fb" cx="600" cy="${wl + 6}" rx="70" ry="9" opacity="0" style="animation:pulse 3.6s ease-out ${-d}s infinite"/>`).join('')}</g>
 ${fish(-150, 345, { dur: 36, opacity: 0.28 })}${fish(1330, 370, { dur: 44, delay: -12, flip: true, color: C.current, opacity: 0.3 })}
 ${bubbles(520, 680, h, 8, { h: 110, seed: 71 })}`
-  return svg({ w: W, h, label: 'Back at the surface. Star a tool you use, then crawl your own site for free with the Crawl Cove desktop app.', body })
+  return svg({ w: W, h, label: 'Back at the surface. Star a tool you use, then crawl your own site for free with the Crawl Cove desktop app.', body, defs: LH_DEFS, css: LH_CSS })
 }
 
 export function button(text, { primary = false } = {}) {
@@ -184,4 +187,26 @@ ${lines.map((l, i) => T(l, { x: 64, y: 70 + size + 48 + i * 28, size: 19, fill: 
 <g style="animation:bob 5s ease-in-out infinite"><g transform="translate(690 236) rotate(-8) scale(.8)">${probe({ lampLen: 120 })}</g></g>
 ${bubbles(640, 700, 240, 5, { h: 150, seed: name.length })}`
   return svg({ w: W, h, label: `${name}: ${description}`, body, css: SCENE_CSS })
+}
+
+// The log the probe brings back: rows appear one at a time.
+export function log() {
+  const rows = [
+    ['1', '/pricing', '200 ok', C.signal],
+    ['2', '/blog/old-guide', '404 broken link, linked from 3 pages', C.alert],
+    ['2', '/shop', 'redirect chain, 2 hops before the page', C.warn],
+    ['3', '/account/login', 'noindex, shut out of search', C.warn],
+    ['3', '/blog/seo-audit', 'meta description missing', C.warn],
+    ['4', '/guides/deep-page', '4 clicks from the homepage', C.tide],
+  ]
+  const h = 88 + rows.length * 38 + 50
+  const m = (t, x, y, fill, weight = 500) => T(t, { x, y, size: 16, font: 'mono', weight, fill })
+  const body = `<rect width="${W}" height="${h}" fill="${C.surface}"/><circle cx="1100" cy="0" r="260" fill="url(#glowT)" opacity=".18"/>
+${T('DIVE LOG', { x: 40, y: 44, size: 14, font: 'mono', weight: 600, fill: C.tide, ls: 3 })}
+${T('depth', { x: 40, y: 78, size: 13, font: 'mono', fill: C.fog })}${T('url', { x: 130, y: 78, size: 13, font: 'mono', fill: C.fog })}${T('what the lamp found', { x: 420, y: 78, size: 13, font: 'mono', fill: C.fog })}
+<line x1="40" x2="${W - 40}" y1="90" y2="90" stroke="${C.hairline}"/>
+${rows.map(([d, u, f, c], i) => `<g style="animation:s${i} 12s linear infinite"><circle cx="48" cy="${112 + i * 38}" r="4" fill="${c}"/>${m(d, 64, 118 + i * 38, C.mist)}${m(u, 130, 118 + i * 38, C.foam)}${m(f, 420, 118 + i * 38, c)}</g>`).join('')}
+<g style="animation:s7 12s linear infinite">${check(48, h - 26, 1)}${m('report ready: one row per fix, most urgent first', 64, h - 20, C.signal, 600)}</g>
+<g transform="translate(1100 ${h - 60}) rotate(-8) scale(.9)" style="">${probe({ lamp: false })}</g>`
+  return svg({ w: W, h, label: 'The dive log: /pricing is fine, /blog/old-guide is a 404 linked from 3 pages, /shop sits behind a redirect chain, /account/login is noindex, /blog/seo-audit has no meta description and /guides/deep-page is 4 clicks from the homepage. Report ready.', body, css: SCENE_CSS })
 }

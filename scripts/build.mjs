@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { card, TOOLS } from './cards.mjs'
-import { hero, dive, chestBar, treasure, faqBar, stack, surface, button, head, HEADS, banner } from './panels.mjs'
+import { hero, dive, chestBar, treasure, faqBar, stack, surface, button, head, HEADS, banner, log } from './panels.mjs'
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const assets = path.join(root, 'profile', 'assets')
@@ -14,7 +14,7 @@ fs.mkdirSync(banners, { recursive: true })
 
 const out = {
   'hero.svg': hero(), 'dive.svg': dive(), 'chest-bar.svg': chestBar(), 'treasure.svg': treasure(),
-  'faq-bar.svg': faqBar(), 'stack.svg': stack(), 'surface.svg': surface(),
+  'faq-bar.svg': faqBar(), 'stack.svg': stack(), 'surface.svg': surface(), 'log.svg': log(),
   'btn-download.svg': button('Download free', { primary: true }),
   'btn-tools.svg': button('Browse the tools'), 'btn-site.svg': button('crawlcove.com'), 'btn-pricing.svg': button('See the plans'),
 }

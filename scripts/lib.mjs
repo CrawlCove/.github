@@ -110,6 +110,7 @@ export const BASE_CSS = `
 @keyframes twinkle{0%,100%{opacity:.25}50%{opacity:.9}}
 @keyframes pulse{0%{transform:scale(.6);opacity:.7}100%{transform:scale(1.9);opacity:0}}
 @keyframes glow{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes eye{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
 @keyframes swim{from{transform:translateX(0)}to{transform:translateX(var(--d,1400px))}}
 .fb{transform-box:fill-box;transform-origin:50% 50%}
 .fbb{transform-box:fill-box;transform-origin:50% 100%}
@@ -199,7 +200,7 @@ export function probe({ lamp = true, lampLen = 190 } = {}) {
 <rect class="fb" x="-54" y="-13" width="5" height="26" rx="2.5" fill="${C.mist}" style="animation:spin .5s linear infinite"/>
 <rect x="-32" y="-19" width="66" height="38" rx="19" fill="#0F1626" stroke="url(#tg)" stroke-width="2.5"/>
 <circle cx="13" cy="0" r="11" fill="#06222B" stroke="${C.tide}" stroke-width="2"/>
-<circle cx="13" cy="0" r="5.5" fill="${C.tide}"/><circle cx="15.2" cy="-2.2" r="1.7" fill="${C.foam}"/>
+<g class="fb" style="animation:eye 5s linear infinite"><circle cx="13" cy="0" r="5.5" fill="${C.tide}"/><circle cx="15.2" cy="-2.2" r="1.7" fill="${C.foam}"/></g>
 <circle cx="-14" cy="6" r="1.8" fill="${C.fog}"/><circle cx="-21" cy="6" r="1.8" fill="${C.fog}"/>
 <line x1="-10" y1="-19" x2="-10" y2="-31" stroke="${C.mist}" stroke-width="2" stroke-linecap="round"/>
 <circle cx="-10" cy="-34" r="3.2" fill="${C.signal}" style="animation:blink 2.4s linear infinite"/>`
@@ -227,4 +228,39 @@ export function check(x, y, s = 1, color = C.signal) {
 }
 export function cross(x, y, s = 1, color = C.alert) {
   return `<path d="M${n(x - 4.5 * s)} ${n(y - 4.5 * s)} l${n(9 * s)} ${n(9 * s)} M${n(x + 4.5 * s)} ${n(y - 4.5 * s)} l${n(-9 * s)} ${n(9 * s)}" fill="none" stroke="${color}" stroke-width="${n(2.2 * s)}" stroke-linecap="round"/>`
+}
+
+// A headland with a lighthouse, so the cove reads as a cove. side: 'right' | 'left'.
+export function headland(w, wl, side = 'right', { lighthouse: lh = true } = {}) {
+  const right = side === 'right'
+  const d = right
+    ? `M${w} ${wl + 20} L${w} ${wl - 78} q-40 -8 -74 -2 q-34 4 -58 26 q-26 22 -58 30 q-30 8 -46 24 Z`
+    : `M0 ${wl + 20} L0 ${wl - 44} q34 -6 62 4 q30 10 52 22 q26 12 44 18 Z`
+  let s = `<path d="${d}" fill="#080B13" stroke="${C.hairline}" stroke-width="1.5"/>`
+  if (right && lh) {
+    const x = w - 62, y = wl - 82
+    s = `<g opacity=".5"><polygon class="beam" points="${x},${y - 62} ${x - 620},${y - 150} ${x - 620},${y + 10}" fill="url(#lhb)"/></g>` + s
+      + `<path d="M${x - 11} ${y} L${x - 7} ${y - 52} h14 L${x + 11} ${y} Z" fill="#0F1626" stroke="${C.mist}" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M${x - 9.5} ${y - 20} h19 M${x - 8} ${y - 38} h16" stroke="${C.tide}" stroke-width="3" opacity=".7"/>
+<rect x="${x - 9}" y="${y - 70}" width="18" height="18" rx="3" fill="#0F1626" stroke="${C.mist}" stroke-width="1.5"/>
+<circle cx="${x}" cy="${y - 61}" r="22" fill="url(#glowG)" style="animation:glow 6s ease-in-out infinite"/><circle cx="${x}" cy="${y - 61}" r="4.5" fill="${C.warn}"/>
+<path d="M${x - 11} ${y - 70} L${x} ${y - 82} L${x + 11} ${y - 70} Z" fill="${C.mist}"/>`
+  }
+  return s
+}
+export const LH_DEFS = `<linearGradient id="lhb" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="${C.warn}" stop-opacity=".5"/><stop offset="1" stop-color="${C.warn}" stop-opacity="0"/></linearGradient>`
+export const LH_CSS = `.beam{transform-box:fill-box;transform-origin:100% 50%;animation:sweep 12s ease-in-out infinite}@keyframes sweep{0%,100%{transform:rotate(-7deg);opacity:.35}50%{transform:rotate(9deg);opacity:1}}@keyframes shoot{0%,86%{transform:translate(0,0);opacity:0}88%{opacity:1}94%,100%{transform:translate(-260px,110px);opacity:0}}@keyframes walk{0%,100%{transform:translateX(0)}50%{transform:translateX(var(--d,160px))}}@keyframes legs{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.82)}}`
+
+export function shootingStar(x, y, delay = 0, dur = 13) {
+  return `<path d="M${x} ${y} l34 -14" stroke="${C.foam}" stroke-width="2" stroke-linecap="round" opacity="0" style="animation:shoot ${dur}s linear ${delay}s infinite"/>`
+}
+
+// A crab. It crawls, which is the whole joke.
+export function crab(x, y, { dist = 160, dur = 16, delay = 0, scale = 1, color = '#FF8A6B' } = {}) {
+  return `<g style="--d:${dist}px;animation:walk ${dur}s ease-in-out ${delay}s infinite"><g transform="translate(${x} ${y}) scale(${scale})">
+<g class="fb" style="animation:legs .5s linear infinite" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round"><path d="M-9 2 l-9 5 M-10 -1 l-10 1 M9 2 l9 5 M10 -1 l10 1"/></g>
+<path d="M-12 0 q0 -11 12 -11 q12 0 12 11 q-12 6 -24 0 Z" fill="${color}"/>
+<path d="M-11 -6 q-8 -4 -7 -12 M11 -6 q8 -4 7 -12" fill="none" stroke="${color}" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="-18" cy="-19" r="3.4" fill="${color}"/><circle cx="18" cy="-19" r="3.4" fill="${color}"/>
+<circle cx="-4" cy="-13" r="2" fill="${C.foam}"/><circle cx="4" cy="-13" r="2" fill="${C.foam}"/><circle cx="-4" cy="-13" r=".9" fill="${C.abyss}"/><circle cx="4" cy="-13" r=".9" fill="${C.abyss}"/></g></g>`
 }

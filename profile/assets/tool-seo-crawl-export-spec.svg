@@ -17,6 +17,7 @@
 @keyframes twinkle{0%,100%{opacity:.25}50%{opacity:.9}}
 @keyframes pulse{0%{transform:scale(.6);opacity:.7}100%{transform:scale(1.9);opacity:0}}
 @keyframes glow{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes eye{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
 @keyframes swim{from{transform:translateX(0)}to{transform:translateX(var(--d,1400px))}}
 .fb{transform-box:fill-box;transform-origin:50% 50%}
 .fbb{transform-box:fill-box;transform-origin:50% 100%}

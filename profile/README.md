@@ -30,6 +30,8 @@ Every site looks calm from the surface. Then you send something down with a lamp
 <summary><a name="dive"><img src="https://raw.githubusercontent.com/CrawlCove/.github/main/profile/assets/dive.svg" width="1200" height="470" alt="A crawl shown as a dive. The probe descends through crawl depths one to four. Its lamp finds a 404 broken link, a redirect chain and a noindex page, then the report is ready. Click for what a crawl checks." /></a></summary>
 <br />
 
+<img src="https://raw.githubusercontent.com/CrawlCove/.github/main/profile/assets/log.svg" width="1200" height="366" alt="The dive log: a 404 linked from 3 pages, a redirect chain, a noindex page, a missing meta description and a page 4 clicks from the homepage. Report ready." />
+
 **What the lamp picks out.** A crawl follows every internal link the way a search engine does, and logs what it meets on the way down:
 
 - Broken links and the pages that link to them
