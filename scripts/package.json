@@ -1,0 +1,7 @@
+{
+  "name": "crawlcove-github-artwork",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node build.mjs" },
+  "dependencies": { "fontkit": "^3.0.0" }
+}
