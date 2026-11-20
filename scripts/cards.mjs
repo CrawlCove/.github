@@ -77,6 +77,12 @@ const scenes = {
   chrome: () => box(18, 12, 324, 88, { r: 10 }) + `<circle cx="32" cy="24" r="3" fill="${C.alert}"/><circle cx="43" cy="24" r="3" fill="${C.warn}"/><circle cx="54" cy="24" r="3" fill="${C.signal}"/><rect x="68" y="18" width="150" height="12" rx="6" fill="${C.abyss}"/><line x1="18" x2="342" y1="36" y2="36" stroke="${C.hairline}"/><line x1="226" x2="226" y1="36" y2="100" stroke="${C.hairline}"/>`
     + `<rect x="30" y="48" width="120" height="8" rx="4" fill="${C.hairline}"/><rect x="30" y="64" width="170" height="6" rx="3" fill="${C.hairline}"/><rect x="30" y="78" width="140" height="6" rx="3" fill="${C.hairline}"/>`
     + g(1, check(240, 52, 0.7) + m('title', 252, 56, C.mist, 11)) + g(2, check(240, 70, 0.7) + m('schema', 252, 74, C.mist, 11)) + g(3, cross(240, 88, 0.6, C.warn) + m('llms.txt', 252, 92, C.warn, 11)),
+  testsite: () => m('crawlcove.github.io/seo-test-site', 18, 28, C.fog, 12)
+    + m('duplicate title', 18, 54, C.foam) + g(1, cross(330, 50, 0.8))
+    + m('canonical to a 404', 18, 75, C.foam) + g(2, cross(330, 71, 0.8))
+    + m('54 planted problems', 18, 96, C.tide) + g(3, check(330, 92, 0.9)),
+  claude: () => T('>', { x: 18, y: 30, size: 13, font: 'mono', weight: 700, fill: C.tide }) + m('/plugin install crawlcove-seo', 34, 30, C.foam)
+    + g(1, m('audit example.com', 18, 60, C.fog)) + g(2, m('broken links, with the page to fix', 18, 84, C.signal)),
   app: () => box(18, 12, 324, 88, { r: 10 }) + `<rect x="18" y="12" width="52" height="88" rx="10" fill="${C.abyss}" stroke="${C.hairline}"/><rect x="30" y="24" width="28" height="28" rx="8" fill="url(#tg)"/>`
     + [0, 1, 2].map((i) => `<rect x="30" y="${62 + i * 11}" width="28" height="5" rx="2.5" fill="${C.hairline}"/>`).join('')
     + [34, 52, 28, 62, 44, 70].map((h, i) => `<rect class="fbb" x="${88 + i * 22}" y="${90 - h}" width="13" height="${h}" rx="3" fill="url(#tg)" opacity="${0.55 + i * 0.09}" style="animation:grow 9s ease-in-out ${n(i * 0.25)}s infinite"/>`).join('')
@@ -98,6 +104,8 @@ export const TOOLS = [
   { repo: 'seo-audit-google-sheets', kind: 'SHEETS ADD-ON', scene: 'sheets', line: 'Turn a crawl export into an audit workbook.' },
   { repo: 'wordpress-seo-connector', kind: 'WORDPRESS PLUGIN', scene: 'wp', line: 'Bulk-apply crawl fixes to your SEO plugin, with one-click revert.' },
   { repo: 'seo-chrome-extension', kind: 'CHROME EXTENSION', scene: 'chrome', line: 'On-page SEO checks and an AI visibility report in the browser.' },
+  { repo: 'claude-seo-plugin', kind: 'CLAUDE CODE PLUGIN', scene: 'claude', line: 'Seven SEO skills for Claude, backed by a real crawl of your site.' },
+  { repo: 'seo-test-site', kind: 'TEST SITE', scene: 'testsite', line: 'A broken site with 54 planted problems. Point any crawler at it.' },
   { repo: 'desktop-app', name: 'Crawl Cove desktop app', kind: 'FREE PLAN', scene: 'app', line: 'The full crawler. Every issue, the pages it is on and the fix.', app: true },
 ]
 
