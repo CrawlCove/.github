@@ -14,5 +14,5 @@
   "wordpress-seo-connector": "Bulk-apply fixes from the Crawl Cove desktop crawler to Yoast SEO, Rank Math, SEOPress or AIOSEO, with a change log and one-click revert.",
   "seo-chrome-extension": "On-page SEO checker with an AI visibility report: which AI crawlers can read the page, snippet blocks, llms.txt and extractability. Nothing leaves the browser.",
   "claude-seo-plugin": "Seven SEO skills for Claude Code backed by a real site crawl: audits, broken links, redirects, titles and fixes, from a chat.",
-  "seo-test-site": "A deliberately broken SEO test site with 54 planted problems and the expected findings, for testing any SEO crawler."
+  "seo-test-site": "A deliberately broken SEO test site with every planted problem and its expected finding listed, for testing any SEO crawler."
 }

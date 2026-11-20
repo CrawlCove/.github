@@ -80,7 +80,7 @@ const scenes = {
   testsite: () => m('crawlcove.github.io/seo-test-site', 18, 28, C.fog, 12)
     + m('duplicate title', 18, 54, C.foam) + g(1, cross(330, 50, 0.8))
     + m('canonical to a 404', 18, 75, C.foam) + g(2, cross(330, 71, 0.8))
-    + m('54 planted problems', 18, 96, C.tide) + g(3, check(330, 92, 0.9)),
+    + m('every problem listed', 18, 96, C.tide) + g(3, check(330, 92, 0.9)),
   claude: () => T('>', { x: 18, y: 30, size: 13, font: 'mono', weight: 700, fill: C.tide }) + m('/plugin install crawlcove-seo', 34, 30, C.foam)
     + g(1, m('audit example.com', 18, 60, C.fog)) + g(2, m('broken links, with the page to fix', 18, 84, C.signal)),
   app: () => box(18, 12, 324, 88, { r: 10 }) + `<rect x="18" y="12" width="52" height="88" rx="10" fill="${C.abyss}" stroke="${C.hairline}"/><rect x="30" y="24" width="28" height="28" rx="8" fill="url(#tg)"/>`
@@ -105,7 +105,7 @@ export const TOOLS = [
   { repo: 'wordpress-seo-connector', kind: 'WORDPRESS PLUGIN', scene: 'wp', line: 'Bulk-apply crawl fixes to your SEO plugin, with one-click revert.' },
   { repo: 'seo-chrome-extension', kind: 'CHROME EXTENSION', scene: 'chrome', line: 'On-page SEO checks and an AI visibility report in the browser.' },
   { repo: 'claude-seo-plugin', kind: 'CLAUDE CODE PLUGIN', scene: 'claude', line: 'Seven SEO skills for Claude, backed by a real crawl of your site.' },
-  { repo: 'seo-test-site', kind: 'TEST SITE', scene: 'testsite', line: 'A broken site with 54 planted problems. Point any crawler at it.' },
+  { repo: 'seo-test-site', kind: 'TEST SITE', scene: 'testsite', line: 'A broken site with every planted problem listed. Point any crawler at it.' },
   { repo: 'desktop-app', name: 'Crawl Cove desktop app', kind: 'FREE PLAN', scene: 'app', line: 'The full crawler. Every issue, the pages it is on and the fix.', app: true },
 ]
 
