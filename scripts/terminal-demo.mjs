@@ -26,7 +26,7 @@ if (!opts.out || (!cmd && !opts.cast && !opts.steps)) {
   process.exit(2)
 }
 const MAX_LINES = Number(opts['max-lines'] ?? 30)
-const COLS = Number(opts.cols ?? 100)
+const COLS = Number(opts.cols ?? 110)
 
 function record(command) {
   return new Promise((resolve) => {
@@ -59,7 +59,8 @@ function record(command) {
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 function tone(text) {
-  if (/\b(error|errors|fail|failed|broken|404|5\d\d|✗|✖)\b/i.test(text)) return C.alert
+  if (/\b0 error\(s\)/.test(text) && !/\b[1-9]\d* (error|warning)/.test(text)) return C.signal
+  if (/[✗✖]/.test(text) || /\b(error|errors|fail|failed|broken|blocked|404|5\d\d)\b/i.test(text)) return C.alert
   if (/\b(warn|warning|warnings|redirect|301|302|noindex)\b/i.test(text)) return C.warn
   if (/\b(ok|pass|passed|valid|200)\b|✓|✔/i.test(text)) return C.signal
   return C.mist
@@ -70,10 +71,22 @@ function render({ title, steps }) {
   const rows = []
   let clock = 400
   for (const st of steps) {
-    const show = st.show
-    const typeMs = Math.min(2000, 32 * show.length)
-    rows.push({ kind: 'prompt', text: show, at: clock, typeMs })
-    clock += typeMs + 350
+    // A long command wraps onto continuation rows, each typed in turn.
+    const parts = []
+    let rest = st.show
+    while (rest.length > COLS - 4) {
+      let cut = rest.lastIndexOf(' ', COLS - 6)
+      if (cut < 20) cut = COLS - 6
+      parts.push(rest.slice(0, cut) + ' \\')
+      rest = rest.slice(cut).trimStart()
+    }
+    parts.push(rest)
+    parts.forEach((text, j) => {
+      const typeMs = Math.min(1600, 28 * text.length)
+      rows.push({ kind: 'prompt', text, at: clock, typeMs, cont: j > 0 })
+      clock += typeMs + 120
+    })
+    clock += 250
     // Drop leading blank lines and wrap long ones at COLS so nothing is cut off.
     let lines = st.lines.slice(st.lines.findIndex((l) => l.text.trim() !== '') < 0 ? st.lines.length : st.lines.findIndex((l) => l.text.trim() !== ''))
     lines = lines.flatMap((l) => {
@@ -83,10 +96,10 @@ function render({ title, steps }) {
       while (rest.length > COLS) {
         let cut = rest.lastIndexOf(' ', COLS)
         if (cut < COLS / 2) cut = COLS
-        out.push({ t: l.t, text: rest.slice(0, cut) })
+        out.push({ t: l.t, text: rest.slice(0, cut), tone: tone(l.text) })
         rest = '  ' + rest.slice(cut).trimStart()
       }
-      out.push({ t: l.t, text: rest })
+      out.push({ t: l.t, text: rest, tone: tone(l.text) })
       return out
     })
     const cap = st.maxLines ?? MAX_LINES
@@ -98,7 +111,7 @@ function render({ title, steps }) {
     for (const l of lines) {
       clock += Math.max(60, Math.min(700, l.t - prev))
       prev = l.t
-      rows.push({ kind: 'out', text: l.text, at: clock })
+      rows.push({ kind: 'out', text: l.text, at: clock, tone: l.tone })
     }
     clock += 900
   }
@@ -121,13 +134,13 @@ function render({ title, steps }) {
     const s = pct(r.at)
     css += `\n@keyframes k${i}{0%,${s}%{opacity:0}${(Number(s) + 0.01).toFixed(2)}%,99.5%{opacity:1}100%{opacity:0}}.l${i}{animation:k${i} ${total}ms linear infinite}`
     if (r.kind === 'prompt') {
-      const t = clip(r.text)
+      const t = r.cont ? '  ' + r.text : r.text
       const cw = (t.length * 8.45).toFixed(0)
       css += `\n@keyframes t${i}{0%,${s}%{width:0}${pct(r.at + r.typeMs)}%,99.5%{width:${cw}px}100%{width:0}}#c${i}{animation:t${i} ${total}ms steps(${Math.max(1, t.length)},end) infinite}`
       defs += `<clipPath id="p${i}"><rect id="c${i}" x="${pad + 17}" y="${y - 15}" height="20" width="0"/></clipPath>`
-      body += `\n<g class="ln l${i}"><text x="${pad}" y="${y}" fill="${C.tide}">$</text><g clip-path="url(#p${i})"><text x="${pad + 17}" y="${y}" fill="${C.foam}">${esc(t)}</text></g></g>`
+      body += `\n<g class="ln l${i}"><text x="${pad}" y="${y}" fill="${C.tide}">${r.cont ? '' : '$'}</text><g clip-path="url(#p${i})"><text x="${pad + 17}" y="${y}" fill="${C.foam}">${esc(t)}</text></g></g>`
     } else {
-      body += `\n<text class="ln l${i}" x="${pad}" y="${y}" fill="${tone(r.text)}">${esc(clip(r.text)) || ' '}</text>`
+      body += `\n<text class="ln l${i}" x="${pad}" y="${y}" fill="${r.tone ?? tone(r.text)}">${esc(clip(r.text)) || ' '}</text>`
     }
   })
   const label = steps.map((s) => s.show).join('; ')
